@@ -1,9 +1,13 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -86,6 +90,23 @@ public class ConsoleService {
 
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
+    }
+
+    public void printBalance(BigDecimal balance) {
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+        String formattedBalance = currencyFormat.format(balance);
+        System.out.println("Your current account balance is: " + formattedBalance);
+    }
+
+    public void printUsersIdAndName(User[] users){
+        System.out.println("-------------------------------------------");
+        System.out.printf("%-10s %n", "Users");
+        System.out.printf(" %-10s  %-10s %n", "ID", "Name");
+        System.out.println("-------------------------------------------");
+        for(User user:users){
+            System.out.printf(" %-10s  %-10s %n", user.getId(), user.getUsername());
+        }
+        System.out.println("---------");
     }
 
 }
