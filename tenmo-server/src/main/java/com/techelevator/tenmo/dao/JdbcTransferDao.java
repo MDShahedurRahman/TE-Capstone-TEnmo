@@ -17,7 +17,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public Transfer getTransactionByTransferId(int transferId) {
+    public Transfer getTransferByTransferId(int transferId) {
         Transfer transfer = null;
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, " +
                 "account_from, account_to, amount FROM transfer WHERE " +
@@ -34,7 +34,7 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public Transfer createTransaction(Transfer transfer) {
+    public Transfer createTransfer(Transfer transfer) {
         Transfer createdTransfer = null;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, " +
                 "account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) " +
@@ -43,7 +43,7 @@ public class JdbcTransferDao implements TransferDao{
         // transfer status will be 2 (ApprovedS))
         try {
             int createdTransactionId = jdbcTemplate.queryForObject(sql, int.class, 2, 2, transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
-            createdTransfer = getTransactionByTransferId(createdTransactionId);
+            createdTransfer = getTransferByTransferId(createdTransactionId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
