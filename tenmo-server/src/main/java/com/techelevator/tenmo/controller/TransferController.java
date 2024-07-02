@@ -26,10 +26,10 @@ public class TransferController {
     }
 
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public Transfer getTransaction(@PathVariable int id, Principal principal) {
+    public Transfer getTransfer(@PathVariable int id, Principal principal) {
         Transfer transfer;
         try {
-            transfer = transferDao.getTransactionByTransferId(id);
+            transfer = transferDao.getTransferByTransferId(id);
         } catch (DaoException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -38,8 +38,8 @@ public class TransferController {
     }
 
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public Transfer addTransaction(@RequestBody Transfer transfer) {
-        return transferDao.createTransaction(transfer);
+    public Transfer addTransfer(@RequestBody Transfer transfer) {
+        return transferDao.createTransfer(transfer);
     }
 
 
