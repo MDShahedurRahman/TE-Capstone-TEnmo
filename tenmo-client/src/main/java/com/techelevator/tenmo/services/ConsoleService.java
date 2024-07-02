@@ -107,6 +107,8 @@ public class ConsoleService {
             System.out.printf(" %-10s  %-10s %n", user.getId(), user.getUsername());
         }
         System.out.println("---------");
+        System.out.println("Enter ID of user you are sending to (0 to cancel):\n" +
+                "Enter amount:");
     }
 
 }
