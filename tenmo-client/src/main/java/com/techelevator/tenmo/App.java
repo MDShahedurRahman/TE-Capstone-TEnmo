@@ -1,12 +1,9 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.tenmo.services.UserServices;
+import com.techelevator.tenmo.model.*;
+import com.techelevator.tenmo.services.*;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -15,6 +12,7 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final UserServices userServices = new UserServices();
+    private final TransferService transferService = new TransferService();
 
     private AuthenticatedUser currentUser;
 
@@ -110,7 +108,26 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
         consoleService.printUsersIdAndName(userServices.getAllUsers());
-		
+        Transfer newTransfer = consoleService.startTransfer();
+		newTransfer.setAccountFrom(currentUser.getUser().getId());
+        // Check to see if user has the funds to transfer
+        AccountService accountService = new AccountService();
+        accountService.setAuthToken(currentUser.getToken());
+
+        BigDecimal currentBalance = accountService.getAccount(currentUser.getUser().getId()).getBalance();
+        if (newTransfer.getAmount().compareTo(currentBalance) > 0) {
+            System.out.println("Insufficient Funds for the transfer.");
+        } else if (newTransfer.getAccountTo() == currentUser.getUser().getId()) {
+            System.out.println("Invalid Transaction");
+        } else {
+            // Moving along with the transfer
+            Transfer createdTransfer = transferService.createTransfer(newTransfer);
+            if (createdTransfer != null) {
+                System.out.println("Transfer successful!");
+            } else {
+                System.out.println("Transfer failed");
+            }
+        }
 	}
 
 	private void requestBucks() {
