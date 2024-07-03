@@ -12,4 +12,5 @@ public interface AccountDao {
     Account getAccountByUserId(int userId);
     void updateAccountBalance(Account account);
     String getUsernameByAccountId(int accountId);
+    Account getAccountById(int id);
 }

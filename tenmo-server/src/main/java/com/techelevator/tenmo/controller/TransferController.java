@@ -22,15 +22,11 @@ public class TransferController {
     private final TransferDao transferDao;
     private final TransferStatusDao transferStatusDao;
     private final TransferTypeDao transferTypeDao;
-    private UserDao userDao;
-    private AccountDao accountDao;
 
-    public TransferController(TransferDao transferDao, TransferStatusDao transferStatusDao, TransferTypeDao transferTypeDao, UserDao userDao, AccountDao accountDao) {
+    public TransferController(TransferDao transferDao, TransferStatusDao transferStatusDao, TransferTypeDao transferTypeDao) {
         this.transferDao = transferDao;
         this.transferStatusDao = transferStatusDao;
         this.transferTypeDao = transferTypeDao;
-        this.userDao = userDao;
-        this.accountDao = accountDao;
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
@@ -44,7 +40,7 @@ public class TransferController {
         return transfers;
     }
 
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
     public Transfer getTransfer(@PathVariable int id) {
         Transfer transfer;
         try {
@@ -57,14 +53,23 @@ public class TransferController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public Transfer addTransfer(@Valid @RequestBody TransferDto transferdto) {
-        Transfer transfer;
+    public Transfer addTransfer(@Valid @RequestBody TransferDto newTransfer) {
         try {
-            transfer = transferDao.createTransfer(transferdto);
+            Transfer transfer = transferDao.createTransfer(newTransfer);
+            if (transfer == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transfer creation failed.");
+            }
+            return transferDao.getTransferById(transfer.getId());
         } catch (DaoException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Transfer creation failed.", e.getCause());
         }
+    }
 
-        return transfer;
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+    public Transfer updateTransfer(@Valid @RequestBody Transfer transfer, @PathVariable int id) {
+        if (transfer.getId() != id) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find transfer with specified ID");
+        }
+        return transferDao.updateTransfer(transfer);
     }
 }

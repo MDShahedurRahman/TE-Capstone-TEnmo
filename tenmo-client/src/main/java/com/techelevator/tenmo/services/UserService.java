@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
@@ -10,10 +11,8 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
-public class UserServices {
-    private static final String API_BASE_URL = "http://localhost:8080";
+public class UserService {
+    private static final String API_BASE_URL = "http://localhost:8080/";
     private final RestTemplate restTemplate = new RestTemplate();
 
     private String authToken = null;
@@ -22,21 +21,21 @@ public class UserServices {
         this.authToken = authToken;
     }
 
-    public User[] getAllUsers() {
+    public User[] getUsers(AuthenticatedUser authenticatedUser) {
         User[] users = null;
         try {
-            HttpEntity<Void> entity = createAuthEntity();
-            ResponseEntity<User[]> response = restTemplate.exchange(API_BASE_URL + "/user", HttpMethod.GET,
-                    entity, User[].class);
+            ResponseEntity<User[]> response = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET,
+                    makeEntity(authenticatedUser), User[].class);
             users = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
         return users;
     }
-    private HttpEntity<Void> createAuthEntity() {
+
+    private HttpEntity<AuthenticatedUser> makeEntity(AuthenticatedUser authenticatedUser) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authToken);
+        headers.setBearerAuth(authenticatedUser.getToken());
         return new HttpEntity<>(headers);
     }
 }

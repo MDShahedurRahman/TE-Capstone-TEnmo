@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
@@ -49,6 +50,30 @@ public class ConsoleService {
         System.out.println("5: Request TE bucks");
         System.out.println("0: Exit");
         System.out.println();
+    }
+
+    public void printSendRequestBanner() {
+        System.out.println("-------------------------------------------");
+        System.out.printf("%-10s %n", "Users");
+        System.out.printf(" %-10s  %-10s %n", "ID", "Name");
+        System.out.println("-------------------------------------------");
+    }
+
+    public void printNotEnoughBalanceForTransfer() {
+        System.out.println();
+        System.out.println("**************************************************************");
+        System.out.println("Your available balance is not high enough for the transaction.");
+        System.out.println("**************************************************************");
+    }
+
+
+    public void printUserIdsAndNames(AuthenticatedUser authenticatedUser, User[] users) {
+        for (User user : users) {
+            if (user.getId() != authenticatedUser.getUser().getId()) {
+                System.out.println(user.getId() + "\t\t\t" + user.getUsername());
+            }
+        }
+        System.out.println("---------");
     }
 
     public UserCredentials promptForCredentials() {
@@ -108,24 +133,5 @@ public class ConsoleService {
             System.out.printf(" %-10s  %-10s %n", user.getId(), user.getUsername());
         }
         System.out.println("---------");
-    }
-
-    // method to take fromId from user and the amount.
-    public Transfer startTransfer() {
-        Transfer transfer = new Transfer();
-        System.out.println("Enter ID of user you are sending to (0 to cancel): ");
-        int toId = scanner.nextInt();
-        if (toId == 0) {
-            System.out.println("Transfer canceled.");
-            return null;
-        }
-        System.out.println("Enter amount: ");
-        BigDecimal transferAmount = scanner.nextBigDecimal();
-        transfer.setAmount(transferAmount);
-        transfer.setAccountTo(toId);
-        // Not sure if these are necessary
-        transfer.setTransferStatusId(2);
-        transfer.setTransferTypeId(2);
-        return transfer;
     }
 }

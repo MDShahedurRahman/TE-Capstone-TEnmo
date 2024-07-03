@@ -11,7 +11,8 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-    private final UserServices userServices = new UserServices();
+    private final AccountService accountService = new AccountService();
+    private final UserService userService = new UserService();
     private final TransferService transferService = new TransferService();
 
     private AuthenticatedUser currentUser;
@@ -89,10 +90,8 @@ public class App {
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
         AccountService accountService = new AccountService();
-        accountService.setAuthToken(currentUser.getToken());
-        User currentUserInfo = currentUser.getUser();
         // Prints a formatted version of the users current balance (see console services)
-        consoleService.printBalance(accountService.getAccount(currentUserInfo.getId()).getBalance());
+        consoleService.printBalance(accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getBalance());
 	}
 
 	private void viewTransferHistory() {
@@ -107,25 +106,30 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-        consoleService.printUsersIdAndName(userServices.getAllUsers());
-        Transfer newTransfer = consoleService.startTransfer();
-		newTransfer.setAccountFrom(currentUser.getUser().getId());
-        // Check to see if user has the funds to transfer
-        AccountService accountService = new AccountService();
-        accountService.setAuthToken(currentUser.getToken());
+        consoleService.printSendRequestBanner();
+        consoleService.printUserIdsAndNames(currentUser, userService.getUsers(currentUser));
+        int receivingUserId = consoleService.promptForInt("Enter ID of user you are sending money to (0 to cancel): ");
 
-        BigDecimal currentBalance = accountService.getAccount(currentUser.getUser().getId()).getBalance();
-        if (newTransfer.getAmount().compareTo(currentBalance) > 0) {
-            System.out.println("Insufficient Funds for the transfer.");
-        } else if (newTransfer.getAccountTo() == currentUser.getUser().getId()) {
-            System.out.println("Invalid Transaction");
-        } else {
-            // Moving along with the transfer
-            Transfer createdTransfer = transferService.createTransfer(newTransfer);
-            if (createdTransfer != null) {
-                System.out.println("Transfer successful!");
+        if (receivingUserId == currentUser.getUser().getId()) {
+            System.out.println("You cannot send money to yourself.");
+        }
+
+        if (receivingUserId != 0 && receivingUserId != currentUser.getUser().getId()) {
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: $");
+            if (accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getBalance().subtract(amountToSend).compareTo(BigDecimal.ZERO) >= 0) {
+                int currentUserAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
+                int receivingUserAccountId = accountService.getAccountByUserId(currentUser, receivingUserId).getAccountId();
+                Transfer transfer = new Transfer(2, 2, currentUserAccountId, receivingUserAccountId, amountToSend);
+                Transfer sentTransfer = transferService.sendTransfer(currentUser, transfer);
+
+                if (accountService.updateAccount(currentUser, sentTransfer, currentUserAccountId)) {
+                    System.out.println("Transfer complete.");
+                } else {
+                    System.out.println("Transfer failed, make sure the user ID matches on the list and try again.");
+                }
+
             } else {
-                System.out.println("Transfer failed");
+                consoleService.printNotEnoughBalanceForTransfer();
             }
         }
 	}
