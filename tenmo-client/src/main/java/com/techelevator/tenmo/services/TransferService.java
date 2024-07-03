@@ -17,11 +17,12 @@ public class TransferService {
     }
     // Working on adding in the client side method
     public Transfer createTransfer() {
-        Transfer transfer = null;
-        try {
-            HttpEntity<Void> entity = createAuthEntity();
-            ResponseEntity<Transfer> responce =
-        }
+//        Transfer transfer = null;
+//        try {
+//            HttpEntity<Void> entity = createAuthEntity();
+//            ResponseEntity<Transfer> responce =
+//        }
+        return null;
     }
 
     private HttpEntity<Void> createAuthEntity() {

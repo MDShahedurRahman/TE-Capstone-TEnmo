@@ -1,40 +1,28 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Transfer {
-    private int id;
-    private int transferStatusId;
+public class TransferDto {
+
     private int transferTypeId;
+    private int transferStatusId;
+    @Min(1000)
     private int accountFromId;
+    @Min(1000)
     private int accountToId;
+    @Positive(message = "Transfer amount must be higher greater than $0.00")
     private BigDecimal amount;
 
-    public Transfer() { }
-    public Transfer(int id, int transferStatusId, int transferTypeId, int accountFromId, int accountToId, BigDecimal amount) {
-        this.id = id;
-        this.transferStatusId = transferStatusId;
+    public TransferDto(int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {
         this.transferTypeId = transferTypeId;
+        this.transferStatusId = transferStatusId;
         this.accountFromId = accountFromId;
         this.accountToId = accountToId;
         this.amount = amount;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getTransferStatusId() {
-        return transferStatusId;
-    }
-
-    public void setTransferStatusId(int transferStatusId) {
-        this.transferStatusId = transferStatusId;
     }
 
     public int getTransferTypeId() {
@@ -43,6 +31,14 @@ public class Transfer {
 
     public void setTransferTypeId(int transferTypeId) {
         this.transferTypeId = transferTypeId;
+    }
+
+    public int getTransferStatusId() {
+        return transferStatusId;
+    }
+
+    public void setTransferStatusId(int transferStatusId) {
+        this.transferStatusId = transferStatusId;
     }
 
     public int getAccountFromId() {
@@ -69,31 +65,28 @@ public class Transfer {
         this.amount = amount;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Transfer transfer = (Transfer) o;
-        return id == transfer.id &&
-                transferStatusId == transfer.transferStatusId &&
-                transferTypeId == transfer.transferTypeId &&
-                accountFromId == transfer.accountFromId &&
-                accountToId == transfer.accountToId &&
-                amount.equals(transfer.amount);
+        TransferDto transferDto = (TransferDto) o;
+        return transferTypeId == transferDto.transferTypeId &&
+                transferStatusId == transferDto.transferStatusId &&
+                accountFromId == transferDto.accountFromId &&
+                accountToId == transferDto.accountToId &&
+                amount.equals(transferDto.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transferStatusId, transferTypeId, accountFromId, accountToId, amount);
+        return Objects.hash(transferTypeId, transferStatusId, accountFromId, accountToId, amount);
     }
 
     @Override
     public String toString() {
-        return "Transfer{" +
-                "id=" + id +
+        return "ValidTransferDto{" +
+                "transferTypeId=" + transferTypeId +
                 ", transferStatusId=" + transferStatusId +
-                ", transferTypeId=" + transferTypeId +
                 ", accountFromId=" + accountFromId +
                 ", accountToId=" + accountToId +
                 ", amount=" + amount +
