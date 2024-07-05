@@ -8,8 +8,6 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-
 public class TransferService {
     private static final String API_BASE_URL = "http://localhost:8080/";
     private final RestTemplate restTemplate = new RestTemplate();
@@ -47,13 +45,30 @@ public class TransferService {
         }
         return transferStatusDescription;
     }
-    // Added new method for getting transfers by account ID
+
+    // Getting a specific transfer by its Id
+    public Transfer getTransferById(AuthenticatedUser authenticatedUser, int id) {
+        Transfer transfer = null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Integer> entity = new HttpEntity<>(id, headers);
+        try {
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + id, HttpMethod.GET,
+                    entity, Transfer.class);
+            transfer = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transfer;
+    }
+        // Added new method for getting transfers by account ID
     public Transfer[] getTransfersByAccountId(int accountId) {
         Transfer[] transfers = null;
         try {
             HttpEntity<Void> entity = createAuthEntity();
             ResponseEntity<Transfer[]> response = restTemplate.exchange(
-                    API_BASE_URL + "/transfers/account/" + accountId,
+                    API_BASE_URL + "transfers/account/" + accountId,
                     HttpMethod.GET, entity, Transfer[].class);
             transfers = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {

@@ -137,4 +137,11 @@ public class ConsoleService {
     private void viewPendingRequestText(){
         System.out.println();
     }
+    private void prettyPrintTransferInfo(Transfer transfer){
+        System.out.println("-------------------------------------------- \n Transfer Details \n--------------------------------------------");
+        System.out.println("Id: " + transfer.getId());
+        System.out.println("From: " + transfer.getAccountFromId());
+        System.out.println("To: " + transfer.getAccountFromId());
+        System.out.println("");
+    }
 }

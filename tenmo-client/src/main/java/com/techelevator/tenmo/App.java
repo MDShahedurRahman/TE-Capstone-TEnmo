@@ -97,6 +97,8 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
+        transferService.setAuthToken(currentUser.getToken());
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("-------------------------------------------");
         System.out.println("Transfers");
@@ -106,12 +108,13 @@ public class App {
         Account userAccount = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId());
         Transfer[] transfers = transferService.getTransfersByAccountId(userAccount.getAccountId());
         // Check if transfers array is null
-        if (transfers != null) {
+        if (transfers != null && transfers.length > 0) {
             for (Transfer transfer : transfers) {
                 // Will also Have to get username based off the to/from
                 // if it does not equal the current user
                 String fromTo = "From: " + transfer.getAccountFromId() + " To: " + transfer.getAccountToId();
                 System.out.printf("%-10s %-30s %-10s%n", transfer.getId(), fromTo, transfer.getAmount());
+                // Need to place logic to get username of sender and receiver
 
             }
         } else {
@@ -125,7 +128,7 @@ public class App {
             System.out.println("Canceling...");
         } else {
             // Getting Transfer info by transfer Id
-            //Transfer transfer = transferService.
+            Transfer transfer = transferService.getTransferById(currentUser, transferId);
         }
 
     }
