@@ -9,5 +9,6 @@ public interface TransferDao {
     Transfer getTransferById(int transferId);
     Transfer createTransfer(TransferDto transfer);
     List<Transfer> getTransfers();
+    public List<Transfer> getTransfersByAccountId(int accountId);
     Transfer updateTransfer(Transfer transfer);
 }

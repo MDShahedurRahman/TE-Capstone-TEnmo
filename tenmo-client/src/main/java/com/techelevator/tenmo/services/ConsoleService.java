@@ -134,4 +134,7 @@ public class ConsoleService {
         }
         System.out.println("---------");
     }
+    private void viewPendingRequestText(){
+        System.out.println();
+    }
 }

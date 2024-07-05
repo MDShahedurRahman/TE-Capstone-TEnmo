@@ -52,6 +52,18 @@ public class TransferController {
         return transfer;
     }
 
+    // new end point to get all transfers both to and from the user based off their account id
+    @RequestMapping(path = "/account/{accountId}", method = RequestMethod.GET)
+    public List<Transfer> getTransfersByAccountId(@PathVariable int accountId) {
+        List<Transfer> transfers;
+        try {
+            transfers = transferDao.getTransfersByAccountId(accountId);
+        } catch (DaoException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return transfers;
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "", method = RequestMethod.POST)
     public Transfer addTransfer(@Valid @RequestBody TransferDto newTransfer) {

@@ -47,6 +47,20 @@ public class TransferService {
         }
         return transferStatusDescription;
     }
+    // Added new method for getting transfers by account ID
+    public Transfer[] getTransfersByAccountId(int accountId) {
+        Transfer[] transfers = null;
+        try {
+            HttpEntity<Void> entity = createAuthEntity();
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(
+                    API_BASE_URL + "/transfers/account/" + accountId,
+                    HttpMethod.GET, entity, Transfer[].class);
+            transfers = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transfers;
+    }
 
 
     private HttpEntity<Transfer> makeEntity(AuthenticatedUser authenticatedUser, Transfer newTransfer) {
@@ -54,5 +68,11 @@ public class TransferService {
         headers.setBearerAuth(authenticatedUser.getToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(newTransfer, headers);
+    }
+
+    private HttpEntity<Void> createAuthEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(headers);
     }
 }

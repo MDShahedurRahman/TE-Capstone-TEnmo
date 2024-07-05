@@ -4,10 +4,12 @@ import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
+import java.util.Scanner;
 
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
+
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
@@ -95,12 +97,43 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
-	}
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("-------------------------------------------");
+        System.out.println("Transfers");
+        System.out.printf("%-10s %-30s %-10s", "ID", "From/To", "Amount");
+        System.out.println();
+        // Getting user Account info
+        Account userAccount = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId());
+        Transfer[] transfers = transferService.getTransfersByAccountId(userAccount.getAccountId());
+        // Check if transfers array is null
+        if (transfers != null) {
+            for (Transfer transfer : transfers) {
+                // Will also Have to get username based off the to/from
+                // if it does not equal the current user
+                String fromTo = "From: " + transfer.getAccountFromId() + " To: " + transfer.getAccountToId();
+                System.out.printf("%-10s %-30s %-10s%n", transfer.getId(), fromTo, transfer.getAmount());
+
+            }
+        } else {
+            System.out.println();
+            System.out.println("No transfers found.");
+        }
+        System.out.println("---------");
+        System.out.println("Please enter transfer ID to view details (0 to cancel): ");
+        int transferId = scanner.nextInt();
+        if (transferId == 0) {
+            System.out.println("Canceling...");
+        } else {
+            // Getting Transfer info by transfer Id
+            //Transfer transfer = transferService.
+        }
+
+    }
+
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
+
 		
 	}
 
