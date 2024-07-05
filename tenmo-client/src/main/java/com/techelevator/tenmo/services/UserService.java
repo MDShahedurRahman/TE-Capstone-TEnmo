@@ -32,6 +32,17 @@ public class UserService {
         }
         return users;
     }
+    public User getUserByAccountId(AuthenticatedUser authenticatedUser, int id) {
+        User user = null;
+        try {
+            ResponseEntity<User> response = restTemplate.exchange(API_BASE_URL + "users/account/" + id, HttpMethod.GET,
+                    makeEntity(authenticatedUser), User.class);
+            user = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return user;
+    }
 
     private HttpEntity<AuthenticatedUser> makeEntity(AuthenticatedUser authenticatedUser) {
         HttpHeaders headers = new HttpHeaders();

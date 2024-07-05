@@ -128,7 +128,11 @@ public class App {
             System.out.println("Canceling...");
         } else {
             // Getting Transfer info by transfer Id
-            Transfer transfer = transferService.getTransferById(currentUser, transferId);
+            //Transfer transfer = transferService.getTransferById(currentUser, transferId);
+            for (Transfer transfer:transfers) {
+                if (transfer.getId() == transferId)
+                consoleService.prettyPrintTransferInfo(transfer);
+            }
         }
 
     }

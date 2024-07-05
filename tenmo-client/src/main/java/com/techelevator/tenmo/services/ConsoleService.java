@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class ConsoleService {
 
     private final Scanner scanner = new Scanner(System.in);
+    private UserService userService = new UserService();
 
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
@@ -134,14 +135,26 @@ public class ConsoleService {
         }
         System.out.println("---------");
     }
-    private void viewPendingRequestText(){
+    public void viewPendingRequestText(){
         System.out.println();
     }
-    private void prettyPrintTransferInfo(Transfer transfer){
+    public void prettyPrintTransferInfo(Transfer transfer){
         System.out.println("-------------------------------------------- \n Transfer Details \n--------------------------------------------");
         System.out.println("Id: " + transfer.getId());
         System.out.println("From: " + transfer.getAccountFromId());
         System.out.println("To: " + transfer.getAccountFromId());
-        System.out.println("");
+        if (transfer.getTransferTypeId() == 1) {
+            System.out.println("Type: Request");
+        } else {
+            System.out.println("Type: Send");
+        }
+        if (transfer.getTransferStatusId() == 1) {
+            System.out.println("Status: Pending");
+        } else if (transfer.getTransferStatusId() == 2) {
+            System.out.println("Status: Approved");
+        } else {
+            System.out.println("Status: Rejected");
+        }
+        System.out.println("Amount: $" + transfer.getAmount());
     }
 }
