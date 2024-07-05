@@ -112,7 +112,7 @@ public class App {
             for (Transfer transfer : transfers) {
                 // Will also Have to get username based off the to/from
                 // if it does not equal the current user
-                String fromTo = "From: " + transfer.getAccountFromId() + " To: " + transfer.getAccountToId();
+                String fromTo = "From: " + userService.getUserByAccountId(currentUser,transfer.getAccountFromId()) + " To: " + userService.getUserByAccountId(currentUser,transfer.getAccountToId());
                 System.out.printf("%-10s %-30s %-10s%n", transfer.getId(), fromTo, transfer.getAmount());
                 // Need to place logic to get username of sender and receiver
 
@@ -130,8 +130,26 @@ public class App {
             // Getting Transfer info by transfer Id
             //Transfer transfer = transferService.getTransferById(currentUser, transferId);
             for (Transfer transfer:transfers) {
-                if (transfer.getId() == transferId)
-                consoleService.prettyPrintTransferInfo(transfer);
+                if (transfer.getId() == transferId) {
+                    System.out.println("-------------------------------------------- \n Transfer Details \n--------------------------------------------");
+                    System.out.println("Id: " + transfer.getId());
+                    System.out.println("From: " + userService.getUserByAccountId(currentUser, transfer.getAccountFromId()));
+                    System.out.println("To: " + userService.getUserByAccountId(currentUser, transfer.getAccountToId()));
+                    if (transfer.getTransferTypeId() == 1) {
+                        System.out.println("Type: Request");
+                    } else {
+                        System.out.println("Type: Send");
+                    }
+                    if (transfer.getTransferStatusId() == 1) {
+                        System.out.println("Status: Pending");
+                    } else if (transfer.getTransferStatusId() == 2) {
+                        System.out.println("Status: Approved");
+                    } else {
+                        System.out.println("Status: Rejected");
+                    }
+                    System.out.println("Amount: $" + transfer.getAmount());
+
+                }
             }
         }
 
