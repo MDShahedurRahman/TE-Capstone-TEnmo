@@ -136,6 +136,32 @@ public class App {
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
+        consoleService.printSendRequestBanner();
+        consoleService.printUserIdsAndNames(currentUser, userService.getUsers(currentUser));
+        int requestingUserId = consoleService.promptForInt("Enter ID of user you are requesting money from (0 to cancel): ");
+
+        if (requestingUserId == currentUser.getUser().getId()) {
+            System.out.println("You cannot request money from yourself.");
+        }
+
+        if (requestingUserId != 0 && requestingUserId != currentUser.getUser().getId()) {
+            BigDecimal amountToRequest = consoleService.promptForBigDecimal("Enter amount: $");
+            Transfer transfer = new Transfer(1, 1,
+                    accountService.getAccountByUserId(currentUser, requestingUserId).getAccountId(),
+                    accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId(),
+                    amountToRequest);
+            Transfer requestedTransfer = transferService.sendTransfer(currentUser, transfer);
+            try {
+                if (transferService.getTransferStatusDescriptionById(currentUser,
+                        requestedTransfer.getTransferStatusId()).equals("Pending")) {
+                    System.out.println("Request was sent and is pending for approval from user.");
+                } else {
+                    System.out.println("Request failed.");
+                }
+            } catch (NullPointerException e) {
+                System.out.println("Could not find user with specified ID.");
+            }
+        }
 		
 	}
 

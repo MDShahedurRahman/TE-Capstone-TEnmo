@@ -7,6 +7,7 @@ import com.techelevator.tenmo.dao.TransferStatusDao;
 import com.techelevator.tenmo.dao.TransferTypeDao;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDto;
+import com.techelevator.tenmo.model.TransferStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -71,5 +72,16 @@ public class TransferController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find transfer with specified ID");
         }
         return transferDao.updateTransfer(transfer);
+    }
+
+    @RequestMapping(path = "/transfer_status/{id}", method = RequestMethod.GET)
+    public String getTransferStatusDescriptionById(@PathVariable int id) {
+        TransferStatus transferStatus = transferStatusDao.getTransferStatusById(id);
+        String transferStatusDescription = transferStatus.getTransferStatusDescription();
+        if (transferStatusDescription.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find transfer status description with specified ID");
+        } else {
+            return transferStatusDescription;
+        }
     }
 }

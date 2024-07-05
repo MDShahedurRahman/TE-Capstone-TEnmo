@@ -70,7 +70,7 @@ public class ConsoleService {
     public void printUserIdsAndNames(AuthenticatedUser authenticatedUser, User[] users) {
         for (User user : users) {
             if (user.getId() != authenticatedUser.getUser().getId()) {
-                System.out.println(user.getId() + "\t\t\t" + user.getUsername());
+                System.out.println(user.getId() + "\t\t" + user.getUsername());
             }
         }
         System.out.println("---------");

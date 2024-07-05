@@ -3,10 +3,7 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.util.BasicLogger;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +30,22 @@ public class TransferService {
             BasicLogger.log(e.getMessage());
         }
         return newSendTransfer;
+    }
+
+    public String getTransferStatusDescriptionById(AuthenticatedUser authenticatedUser, int id) {
+        String transferStatusDescription = "";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Integer> entity = new HttpEntity<>(id, headers);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(API_BASE_URL + "transfers/transfer_status/" + id, HttpMethod.GET,
+                    entity, String.class);
+            transferStatusDescription = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transferStatusDescription;
     }
 
 
