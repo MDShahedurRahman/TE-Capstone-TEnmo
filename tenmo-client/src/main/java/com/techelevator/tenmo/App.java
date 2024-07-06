@@ -4,6 +4,8 @@ import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -157,9 +159,47 @@ public class App {
 
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+        transferService.setAuthToken(currentUser.getToken());
+        System.out.println("-------------------------------------------\n" +
+                "Pending Transfers\n" +
+                "ID          To                     Amount\n" +
+                "-------------------------------------------");
+        System.out.println();
 
-		
+        Account userAccount = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId());
+        Transfer[] transfers = transferService.getTransfersByAccountId(userAccount.getAccountId());
+        for (Transfer transfer: transfers) {
+            if (transfer.getAccountToId() != currentUser.getUser().getId() && transfer.getTransferStatusId() == 1) {
+                System.out.printf("%-10s %-25s %-10s%n$", transfer.getId(), userService.getUserByAccountId(currentUser, transfer.getAccountToId()), transfer.getAmount());
+            }
+        }
+        // Create the logic to complete a transfer if it's pending
+        System.out.println("Please enter transfer ID to approve/reject (0 to cancel):");
+        Scanner scanner = new Scanner(System.in);
+        int transferId = scanner.nextInt();
+        if (transferId == 0){
+            System.out.println("Canceled...");
+            return;
+        } else {
+            // Update transfer
+            System.out.println("1: Approve\n" +
+                    "2: Reject\n" +
+                    "0: Don't approve or reject\n" +
+                    "---------\n" +
+                    "Please choose an option: ");
+            int userInput = scanner.nextInt();
+            if (userInput == 1) {
+                // Update status to Success and complete transfer
+                return;
+            } else if (userInput == 2) {
+                // Update status to Rejected
+                return;
+            } else {
+                // Don't do either
+                System.out.println("Canceling...");
+                return;
+            }
+        }
 	}
 
 	private void sendBucks() {

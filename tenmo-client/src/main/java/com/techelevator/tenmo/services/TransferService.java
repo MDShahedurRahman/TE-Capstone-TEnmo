@@ -30,6 +30,11 @@ public class TransferService {
         return newSendTransfer;
     }
 
+    // Need to create a method that updates transfer status
+     public Transfer updateTransfer(AuthenticatedUser authenticatedUser, int id){
+        Transfer transfer
+     }
+
     public String getTransferStatusDescriptionById(AuthenticatedUser authenticatedUser, int id) {
         String transferStatusDescription = "";
         HttpHeaders headers = new HttpHeaders();
