@@ -16,20 +16,21 @@ public class JdbcTransferStatusDao implements TransferStatusDao{
     }
 
     @Override
-    public TransferStatus getTransferStatusByDescription(String description) {
-        TransferStatus transferStatus = null;
-        String sql = "SELECT transfer_status_id, transfer_status_desc FROM transfer_status WHERE transfer_status_desc = ?;";
+    public TransferStatus getTransferStatusByDesc(String desc) {
+        TransferStatus newTransferStatus = null;
+        String sql = "SELECT transfer_status_id, transfer_status_desc FROM transfer_status " +
+                "WHERE transfer_status_desc = ?;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, description);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, desc);
             if (results.next()) {
                 int transferStatusId = results.getInt("transfer_status_id");
                 String transferStatusDescription = results.getString("transfer_status_desc");
-                transferStatus = new TransferStatus(transferStatusId, transferStatusDescription);
+                newTransferStatus = new TransferStatus(transferStatusId, transferStatusDescription);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
+            throw new DaoException("Unable to connect to server", e);
         }
-        return transferStatus;
+        return newTransferStatus;
     }
 
     @Override

@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.techelevator.tenmo.dao.TransferStatusDao;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,7 +48,7 @@ public class AccountController {
         Account accountTo = accountDao.getAccountById(transfer.getAccountToId());
         Account accountFrom = accountDao.getAccountById(transfer.getAccountFromId());
         BigDecimal amountTransferred = transfer.getAmount();
-        if (transfer.getTransferStatusId() == transferStatusDao.getTransferStatusByDescription("Approved").getTransferStatusId()) {
+        if (transfer.getTransferStatusId() == transferStatusDao.getTransferStatusByDesc("Approved").getTransferStatusId()) {
             accountFrom.setBalance(accountFrom.getBalance().subtract(amountTransferred));
             accountTo.setBalance(accountTo.getBalance().add(amountTransferred));
             accountDao.updateAccountBalance(accountFrom);

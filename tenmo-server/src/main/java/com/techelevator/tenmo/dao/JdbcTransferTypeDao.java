@@ -17,18 +17,19 @@ public class JdbcTransferTypeDao implements TransferTypeDao{
 
     @Override
     public TransferType getTransferTypeById(int id) {
-        TransferType transferType = null;
-        String sql = "SELECT transfer_type_id, transfer_type_desc FROM transfer_type WHERE transfer_type_id = ?;";
+        TransferType newTransferType = null;
+        String sql = "SELECT transfer_type_id, transfer_type_desc FROM transfer_type " +
+                "WHERE transfer_type_id = ?;";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
             if (results.next()) {
                 int transferTypeId = results.getInt("transfer_type_id");
                 String transferTypeDescription = results.getString("transfer_type_desc");
-                transferType = new TransferType(transferTypeId, transferTypeDescription);
+                newTransferType = new TransferType(transferTypeId, transferTypeDescription);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
+            throw new DaoException("Unable to connect to server", e);
         }
-        return transferType;
+        return newTransferType;
     }
 }

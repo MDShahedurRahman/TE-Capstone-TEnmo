@@ -14,7 +14,7 @@ public class TransferDto {
     private int accountFromId;
     @Min(1000)
     private int accountToId;
-    @Positive(message = "Transfer amount must be higher greater than $0.00")
+    @Positive(message = "Transfer amount must greater than $0.00")
     private BigDecimal amount;
 
     public TransferDto(int transferTypeId, int transferStatusId, int accountFromId, int accountToId, BigDecimal amount) {

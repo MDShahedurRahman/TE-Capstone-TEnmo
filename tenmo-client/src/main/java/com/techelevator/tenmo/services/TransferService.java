@@ -21,21 +21,32 @@ public class TransferService {
 
     public Transfer sendTransfer(AuthenticatedUser authenticatedUser, Transfer newTransfer) {
         HttpEntity<Transfer> entity = makeEntity(authenticatedUser, newTransfer);
-        Transfer newSendTransfer = null;
+        Transfer sendTransfer = null;
         try {
-            newSendTransfer = restTemplate.postForObject(API_BASE_URL + "transfers", entity, Transfer.class);
+            sendTransfer = restTemplate.postForObject(API_BASE_URL + "transfers", entity, Transfer.class);
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return newSendTransfer;
+        return sendTransfer;
     }
 
     // Need to create a method that updates transfer status
-     public Transfer updateTransfer(AuthenticatedUser authenticatedUser, int id){
-        Transfer transfer
-     }
+    public Transfer updateTransfer(AuthenticatedUser authenticatedUser, Transfer newTransfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Transfer> entity = new HttpEntity<>(newTransfer, headers);
+        try {
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfers/" + newTransfer.getId(),
+                    HttpMethod.PUT, entity, Transfer.class);
+            newTransfer = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return newTransfer;
+    }
 
-    public String getTransferStatusDescriptionById(AuthenticatedUser authenticatedUser, int id) {
+    public String getTransferStatusById(AuthenticatedUser authenticatedUser, int id) {
         String transferStatusDescription = "";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authenticatedUser.getToken());
@@ -53,19 +64,19 @@ public class TransferService {
 
     // Getting a specific transfer by its Id
     public Transfer getTransferById(AuthenticatedUser authenticatedUser, int id) {
-        Transfer transfer = null;
+        Transfer newTransfer = null;
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authenticatedUser.getToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Integer> entity = new HttpEntity<>(id, headers);
         try {
-            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfer/" + id, HttpMethod.GET,
-                    entity, Transfer.class);
-            transfer = response.getBody();
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfers/transfer/" + id,
+                    HttpMethod.GET, entity, Transfer.class);
+            newTransfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return transfer;
+        return newTransfer;
     }
         // Added new method for getting transfers by account ID
     public Transfer[] getTransfersByAccountId(int accountId) {

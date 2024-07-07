@@ -2,13 +2,11 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -61,11 +59,11 @@ public class ConsoleService {
         System.out.println("-------------------------------------------");
     }
 
-    public void printNotEnoughBalanceForTransfer() {
+    public void printTransferFailed() {
         System.out.println();
-        System.out.println("**************************************************************");
-        System.out.println("Your available balance is not high enough for the transaction.");
-        System.out.println("**************************************************************");
+        System.out.println("**************************************************");
+        System.out.println("Your balance isn't sufficient for the transaction");
+        System.out.println("**************************************************");
     }
 
 

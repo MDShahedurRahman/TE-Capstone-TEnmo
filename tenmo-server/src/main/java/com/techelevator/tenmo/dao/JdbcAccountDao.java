@@ -42,7 +42,7 @@ public class JdbcAccountDao implements AccountDao {
                 accounts.add(account);
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
+            throw new DaoException("Unable to connect to the server", e);
         }
         return accounts;
     }
@@ -71,7 +71,7 @@ public class JdbcAccountDao implements AccountDao {
                 throw new DaoException(rowsAffected + " rows affected, expected 1.");
             }
         } catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Cannot connect to server or database", e);
+            throw new DaoException("Cannot connect to the server", e);
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
@@ -107,7 +107,7 @@ public class JdbcAccountDao implements AccountDao {
             }
             return account;
         }  catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
+            throw new DaoException("Unable to connect to the server", e);
         }
     }
 

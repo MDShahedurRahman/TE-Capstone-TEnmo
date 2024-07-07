@@ -25,19 +25,19 @@ public class UserController {
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<User> getUsers() {
+    public List<User> getAllUsers() {
         List<User> users = userDao.getUsers();
         if (users.size() < 1) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No users found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Users not found");
         } else {
             return users;
         }
     }
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable int id) {
+    public User getUserByUserId(@PathVariable int id) {
         User user = userDao.getUserById(id);
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User was not found using the specified ID");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No User was found with the ID");
         } else {
             return user;
         }
@@ -47,16 +47,16 @@ public class UserController {
     public Account getAccountByUserId(@PathVariable int id) {
         Account account = accountDao.getAccountByUserId(id);
         if (account == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account was not found using the specified UserID");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Account was found with the UserID");
         } else {
             return account;
         }
     }
     @RequestMapping(path = "/account/{id}", method = RequestMethod.GET)
-    public String getUsernameByAccountId(@PathVariable int id) {
+    public String getUserByAccountId(@PathVariable int id) {
         String username = accountDao.getUsernameByAccountId(id);
         if (username == null || username.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found using specified AccountId");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Username was found with the AccountId");
         } else {
             return username;
         }
